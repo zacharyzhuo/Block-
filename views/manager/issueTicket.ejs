@@ -1,0 +1,44 @@
+<%- include('../header') %>
+
+
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+
+    <div id="first" class="ts top attached tabbed menu">
+        <a class="active item" data-tab="通過" href="/manager/querySuccessApplyStatus">通過</a>
+        <a class="item" data-tab="未通過" href="/manager/queryFailedApplyStatus">未通過</a>
+    </div>
+
+    <!-- 主要容器網格系統 -->
+    <div class="ts centered grid">
+        <div class="twelve wide column">
+            <!-- 主要內容區塊 -->
+            <div class="content">
+                <!-- 表單 -->
+                <form class="ts form" method="post">
+                    <div class="field required">
+                        <label>擁有者</label>
+                        <input type="text" name="owner" placeholder="學號">
+                    </div>
+                    <div class="field required">
+                        <label>發放單位</label>
+                        <input type="text" name="licenser" value=<%=Licenser %>>
+                    </div>
+                    <br>
+                    <button class="ts positive button">
+                        確認
+                    </button>
+                </form>
+                <!-- / 表單 -->
+            </div>
+            <!-- / 主要內容區塊 -->
+        </div>
+    </div>
+    <!-- 主要容器網格系統 -->
+
+
+    <script>
+        ts('#first.tabbed.menu .item').tab();
+    </script>
+
+    <%- include('../footer') %>

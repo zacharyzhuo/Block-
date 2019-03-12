@@ -1,0 +1,16 @@
+<%- include('header') %>
+<link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+<script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+  <div class="ts modals dimmer">
+    <dialog id="modal" class="ts basic modal" open>
+      <div class="content" style="text-align: center">
+        <p>網頁載入中請稍後..
+        </p>
+      </div>      
+    </dialog>
+  </div>
+
+  <script>
+    ts('#modal').modal("show")
+  </script>
+  <%- include('footer') %>

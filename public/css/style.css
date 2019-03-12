@@ -1,0 +1,152 @@
+/* ---------- 全局样式 ---------- */
+
+body {
+  width: 1100px;
+  height: 100%;
+  margin: auto;
+  background-image: url("../img/background.png")
+}
+
+a:hover {
+  border-bottom: 3px solid #4fc08d;
+}
+
+.button {
+  background-color: #4fc08d !important;
+  color: #fff !important;
+}
+
+.avatar {
+  border-radius: 3px;
+  width: 48px;
+  height: 48px;
+  float: right;
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  margin-bottom: 20px;
+  color: #999;
+  text-align: center;
+}
+
+.nav h1 {
+  color: black;
+  display: inline-block;
+  margin: 10px 0;
+  font-size: 45px;
+}
+
+/* ---------- nav-setting ---------- */
+
+.nav-setting {
+  position: fixed;
+  right: 30px;
+  top: 35px;
+  z-index: 999;
+}
+
+.nav-setting .ui.dropdown.button {
+  padding: 10px 10px 0 10px;
+  background-color:  rgb(250, 250, 250) !important;
+}
+
+.nav-setting .icon.bars {
+  color: #000;
+  font-size: 20px;
+}
+
+/* ---------- post-content ---------- */
+
+.post-content h3 a {
+  color: #4fc08d !important;
+}
+
+.post-content .tag {
+  font-size: 13px;
+  margin-right: 5px;
+  color: #999;
+}
+
+.post-content .tag.right {
+  float: right;
+  margin-right: 0;
+}
+
+.post-content .tag.right a {
+  color: #999;
+}
+
+@media only screen and (max-width: 1880px) {
+  body  {
+    width: 1320px;
+    max-width: 112.5%;
+			min-width: 90%;
+    height: 100%;
+  }
+  .school{
+    float: left;
+    margin-left: 300px;
+  }
+  .store{
+    float: right;
+    margin-right: 300px;
+  }
+  .student{
+    margin-top:500px;
+  }
+  .border-style{
+    height:200px;
+  }
+  img{
+    height: 200px;
+    width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  body  {
+    width: 880px;
+    max-width: 112.5%;
+			min-width: 90%;
+    height: 80%;
+  }
+  .border-style{
+    height:160px;
+  }
+  .school{
+    float: left;
+    margin-left: 30px;
+  }
+  .store{
+    float: right;
+    margin-right: 100px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  body  {
+    width: 220px;
+    max-width: 112.5%;
+			min-width: 90%;
+    height: 20%;
+  }
+  .school{
+    margin-left:150px
+  }
+  .store{
+	margin-right:150px;
+	text-align:auto;
+  }
+  .student{
+    margin-top:800px;
+  }
+  .border-style{
+    height:40px;
+  }
+  img{
+    height: 100px;
+    width: 100px;
+  }
+}

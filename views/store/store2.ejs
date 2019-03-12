@@ -1,0 +1,123 @@
+<%- include('header') %>
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js">
+    </script>
+    <style type="text/css">
+        .pusher {
+            background-color: rgb(250, 250, 250);
+        }
+    </style>
+
+    <!-- 左側邊欄 -->
+    <div class="ts left vertical fluid inverted visible menu sidebar">
+
+        <!-- 個人資料項目 -->
+        <div class="center aligned item">
+            <a href="/store/store">
+                <img class="ts tiny circular image" src="/img/store.png">
+                <br>
+                <br>
+                <div>Store</div>
+            </a>
+        </div>
+        <!-- / 個人資料項目 -->
+
+        <!-- 餐券管理 -->
+        <div class="item">
+            <i class="setting icon"></i>
+            餐券管理
+            <div class="menu">
+                <a class="item" href="/store/transaction">掃描餐券</a>
+                <a class="item" href="/store/queryStoreTicket">已收餐券</a>
+            </div>
+        </div>
+        <!-- / 餐券管理 -->
+
+
+        <!-- 底部選單 -->
+        <div class="bottom menu">
+            <!-- 登出 -->
+            <a href="/signout" class="item">
+                <i class="sign out icon"></i>
+                登出
+            </a>
+            <!-- / 登出 -->
+        </div>
+        <!-- / 底部選單 -->
+    </div>
+    <!-- / 左側邊欄 -->
+
+
+    <!-- 可擠壓式的推動容器 -->
+    <div class="squeezable pusher">
+        <%- include('../components/nav') %>
+            <!-- 主要容器 -->
+            <div class="ts narrow container">
+                <div class="ts relaxed grid">
+                    <!-- 標題欄位 -->
+                    <div class="sixteen wide column">
+                        <h3 class="ts header">
+                            商家介面
+                        </h3>
+                    </div>
+                    <!-- / 標題欄位 -->
+
+                    <!-- 大略卡片欄位 -->
+                    <div class="sixteen wide column">
+                        <div class="ts three cards">
+                            <!-- 已收餐券 -->
+                            <div class="ts card">
+                                <div class="content">
+                                    <!-- 統計數據 -->
+                                    <div class="ts left aligned statistic">
+                                        <div class="value">
+                                            1
+                                        </div>
+                                        <div class="label">已收餐券</div>
+                                    </div>
+                                    <!-- / 統計數據 -->
+                                </div>
+                                <div class="symbol">
+                                    <i class="history icon"></i>
+                                </div>
+                            </div>
+                            <!-- / 已收餐券 -->
+
+
+                            <!-- 投訴問題 -->
+                            <div class="ts card">
+                                <div class="content">
+                                    <!-- 統計數據 -->
+                                    <div class="ts left aligned statistic">
+                                        <div class="value">
+                                            0
+                                            <div class="decrement">0</div>
+                                        </div>
+                                        <div class="label">投訴問題</div>
+                                    </div>
+                                    <!-- / 統計數據 -->
+                                </div>
+                                <div class="symbol">
+                                    <i class="users icon"></i>
+                                </div>
+                            </div>
+                            <!-- / 投訴問題 -->
+
+                        </div>
+
+                        <!-- 區隔線 -->
+                        <div class="ts section divider"></div>
+                        <!-- / 區隔線 -->
+                    </div>
+                    <!-- / 大略卡片欄位 -->
+
+                </div>
+            </div>
+            <!-- / 主要容器 -->
+            <br>
+            <!-- / 主要容器 -->
+            <br>
+    </div>
+    <!-- / 可擠壓式的推動容器 -->
+
+    <%- include('footer') %>

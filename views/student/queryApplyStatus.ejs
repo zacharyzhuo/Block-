@@ -1,0 +1,43 @@
+<%- include('../header') %>
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+    <!-- 主要容器網格系統 -->
+    <div class="ts centered grid">
+        <div class="twelve wide column">
+
+            <div class="ts stackable ordered fluid steps">
+                <a class="step" href="/student/apply">
+                    <div class="content">
+                        <div class="title">申請餐券</div>
+                        <div class="description">填寫基本資料</div>
+                    </div>
+                </a>
+                <a class="active step" href="/student/queryApplyStatus">
+                    <div class="content">
+                        <div class="title">審查結果</div>
+                        <div class="description">等待管理者審查</div>
+                    </div>
+                </a>
+            </div>
+            <% if (applyList.VerifyResult == "0") { %>
+                <div class="ts slate">
+                    <span class="header">審核中</span>
+                </div>
+                <% } else if (applyList.VerifyResult == "1") { %>
+                    <div class="ts slate">
+                        <span class="header">審核通過</span>
+                    </div>
+                    <% } else if (applyList.VerifyResult == "2") { %>
+                        <div class="ts slate">
+                            <span class="header">審核未通過</span>
+                        </div>
+                        <% } else if (applyList.VerifyResult == "3") {%>
+                            <div class="ts slate">
+                                <span class="header">尚未申請餐券</span>
+                            </div>
+                            <% } %>
+
+        </div>
+    </div>
+
+    <%- include('../footer') %>

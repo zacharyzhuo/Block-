@@ -1,0 +1,19 @@
+<%- include('../header') %>
+    <div class="ui grid">
+      <div class="four wide column"></div>
+      <div class="eight wide column">
+        <form class="ui form segment" method="post">
+          <label><strong>學生登入:</strong></label>
+          <div class="field required">
+            <label>帳號</label>
+            <input placeholder="帳號" type="text" name="name">
+          </div>
+          <div class="field required">
+            <label>密碼</label>
+            <input placeholder="密碼" type="password" name="password">
+          </div>
+          <input type="submit" class="ui button fluid" value="登入">    </form>
+      </div>
+    </div>
+
+    <%- include('../footer') %>

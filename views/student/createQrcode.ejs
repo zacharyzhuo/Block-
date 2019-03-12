@@ -1,0 +1,36 @@
+<%- include('../header') %>
+
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+
+    <div class="ts centered raised card" style="width: 80%;">
+        <div class="secondary extra content">
+            <div class="image" style="text-align: center" width="800" height="800">
+                <img id="qrcode" src="http://chart.apis.google.com/chart?cht=qr&chl=<%=ticketMessage %>&chs=400x400&choe=UTF-8" width="800" height="800">
+            </div>
+        </div>
+        <div class="content">
+            <div class="header">餐券編號：
+                <%=ticketId %>
+            </div>
+            <div class="description">
+                <p>擁有者：
+                    <%=owner %>
+                </p>
+                <p>發放日期：
+                    <%=issuedDate %>
+                </p>
+                <p>使用日期：
+                    <%=expDate %>
+                </p>
+                <p style="word-wrap:break-word;">學校簽章：
+                    <%=SchSign %>
+                </p>
+                <p style="word-wrap:break-word;">學生簽章：
+                    <%=StuSign %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../footer') %>

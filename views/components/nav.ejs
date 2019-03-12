@@ -1,0 +1,17 @@
+<div class="nav">
+  <div class="ui grid">
+    <div class="four wide column"></div>
+    <div class="eight wide column">
+      <% if (user||student) { %>
+      <a href="/posts"><h1><%= blockchain.title %></h1></a>
+      <% } else if (manager) { %>
+        <a href="/manager/manage"><h1 style="color: #4fc08d;font-size: 60px"><%= blockchain.title %></h1></a>
+        <% } else if (store) { %>
+          <a href="/store/store"><h1 style="color: #4fc08d;font-size: 60px"><%= blockchain.title %></h1></a>
+        <% } else { %> 
+          <a href="/homePage"><h1><%= blockchain.title %></h1></a>
+        <% }%>
+      <p><%= blockchain.description %></p>
+    </div>
+  </div>
+</div>

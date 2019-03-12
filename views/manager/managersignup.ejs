@@ -1,0 +1,25 @@
+<%- include('../header') %>
+
+<div class="ui grid">
+  <div class="four wide column"></div>
+  <div class="eight wide column">
+    <form class="ui form segment" method="post" enctype="multipart/form-data">
+      <label><strong>管理者註冊:</strong></label>
+      <div class="field required">
+        <label>帳號</label>
+        <input placeholder="帳號" type="text" name="name">
+      </div>
+      <div class="field required">
+        <label>密碼</label>
+        <input placeholder="密碼" type="password" name="password">
+      </div>
+      <div class="field required">
+        <label>再次輸入密碼</label>
+        <input placeholder="再次輸入密碼" type="password" name="repassword">
+      </div>
+      <input type="submit" class="ui button fluid" value="註冊">
+    </form>
+  </div>
+</div>
+
+<%- include('../footer') %>

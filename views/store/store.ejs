@@ -1,0 +1,214 @@
+<%- include('header') %>
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js">
+    </script>
+    <style type="text/css">
+        .pusher {
+            background-color: rgb(250, 250, 250);
+        }
+    </style>
+
+    <!-- 左側邊欄 -->
+    <!-- <div class="ts left vertical fluid inverted visible menu sidebar"> -->
+
+    <!-- 個人資料項目 -->
+    <!-- <div class="center aligned item">
+            <a href="/store/store">
+                <img class="ts tiny circular image" src="/img/store.png">
+                <br>
+                <br>
+                <div>Store</div>
+            </a>
+        </div> -->
+    <!-- / 個人資料項目 -->
+
+    <!-- 餐券管理 -->
+    <!-- <div class="item" style="font-size: 20px">
+            <i class="setting icon"></i>
+            餐券管理
+            <div class="menu">
+                <a class="item" href="/store/transaction">掃描餐券</a>
+                <a class="item" href="/store/queryStoreTicket">已收餐券</a>
+            </div>
+        </div> -->
+    <!-- / 餐券管理 -->
+
+
+    <!-- 底部選單 -->
+    <!-- <div class="bottom menu" style="font-size: 20px"> -->
+    <!-- 登出 -->
+    <!-- <a href="/signout" class="item">
+                <i class="sign out icon"></i>
+                登出
+            </a> -->
+    <!-- / 登出 -->
+    <!-- </div> -->
+    <!-- / 底部選單 -->
+    <!-- </div> -->
+    <!-- / 左側邊欄 -->
+
+
+
+    <!-- 可擠壓式的推動容器 -->
+    <div class="squeezable pusher">
+        <div class="nav-setting">
+            <div class="ui buttons">
+                <div class="ui floating dropdown button">
+                    <i class="icon bars"></i>
+                    <div class="menu">
+                        <a style="font-size: 25px;" class="item" href="/signout">登出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../components/nav') %>
+            <%- include('components/notification') %>
+
+                <!-- 主要容器 -->
+                <div class="ts narrow container">
+                    <div class="ts relaxed grid">
+                        <!-- 標題欄位 -->
+                        <div class="sixteen wide column">
+                            <h3 class="ts header">
+                                商家介面
+                            </h3>
+                        </div>
+                        <!-- / 標題欄位 -->
+
+                        <!-- 大略卡片欄位 -->
+                        <div class="sixteen wide column">
+
+                            <div class="ts three cards">
+
+                                <!-- 投訴問題 -->
+                                <!-- <div class="ts card">
+                                <div class="content"> -->
+                                <!-- 統計數據 -->
+                                <!-- <div class="ts left aligned statistic">
+                                        <div class="value">
+                                            0
+                                            <div class="decrement">0</div>
+                                        </div>
+                                        <div class="label">投訴問題</div>
+                                    </div> -->
+                                <!-- / 統計數據 -->
+                                <!-- </div>
+                                <div class="symbol">
+                                    <i class="users icon"></i>
+                                </div>
+                            </div> -->
+                                <!-- / 投訴問題 -->
+
+                            </div>
+
+                            <!-- 區隔線 -->
+                            <div class="ts section divider"></div>
+                            <!-- / 區隔線 -->
+
+                            <!-- 表單 -->
+                            <form class="ts form" method="post">
+                                <div class="ts icon fluid input">
+                                    <input id="transaction" name="transaction" placeholder="請掃描餐券...">
+                                    <i class="qrcode icon"></i>
+                                </div>
+                                <br>
+                            </form>
+                            <!-- / 表單 -->
+
+                            <!-- 區隔線 -->
+                            <div class="ts section divider"></div>
+                            <!-- / 區隔線 -->
+
+                            <!-- 清單欄位 -->
+
+                            <!-- 已收餐券 -->
+                            <!-- <div class="ts card" style="background-color: #3379b788;">
+                                <div class="content"> -->
+                            <!-- 統計數據 -->
+                            <!-- <div class="ts left aligned statistic">
+                                        <div class="value" style="color: white">
+                                            <%= queryStoreTickets.length %>
+                                        </div>
+                                        <div class="label" style="color: white">已收餐券</div>
+                                    </div> -->
+                            <!-- / 統計數據 -->
+                            <!-- </div>
+                                <div class="symbol" style="color: white">
+                                    <i class="history icon"></i>
+                                </div>
+                                <a href="/store/queryStoreTicket">
+                                    <div class="panel-footer" style="background-color: #eee">
+                                        <div style="padding-left:13px;text-align:left;border-right:5px solid #eee;border-left:0">查看詳情
+                                            <i class="arrow right"> </i>
+                                        </div>
+
+                                    </div>
+                                </a>
+                            </div> -->
+                            <!-- / 已收餐券 -->
+
+                            <div style="font-size: 24px;font-weight:bold;">
+                                已收餐券:
+                                <%= queryStoreTickets.length %>
+                            </div>
+
+                            <div>
+                                <table class="ts fixed table" style="background-color: white;font-size: 16px;">
+                                    <thead>
+                                        <tr>
+                                            <th>餐券編號</th>
+                                            <th>擁有者</th>
+                                            <th>額度</th>
+                                            <th>發放單位</th>
+                                            <th>消費餐廳</th>
+                                            <th>發放日期</th>
+                                            <th>使用日期</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <table class="ts fixed table" style="background-color: white;font-size: 16px;">
+                                <tbody>
+                                    <%queryStoreTickets.forEach(function(queryStoreTickets) { %>
+                                        <tr>
+                                            <td>
+                                                <%=queryStoreTickets.Key%>
+                                            </td>
+                                            <td>
+                                                <%=queryStoreTickets.Owner%>
+                                            </td>
+                                            <td style="padding-left:20px">
+                                                <%=queryStoreTickets.Value%>
+                                            </td>
+                                            <td style="padding-left:20px">
+                                                <%=queryStoreTickets.Licenser%>
+                                            </td>
+                                            <td style="padding-left:20px">
+                                                <%=queryStoreTickets.Restaurant%>
+                                            </td>
+                                            <td style="padding-left:20px">
+                                                <%=queryStoreTickets.IssuedDate%>
+                                            </td>
+                                            <td style="padding-left:20px">
+                                                <%=queryStoreTickets.UsedDate%>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                            <!-- / 清單欄位 -->
+
+                        </div>
+                        <!-- / 大略卡片欄位 -->
+
+                    </div>
+                </div>
+                <!-- / 主要容器 -->
+                <br>
+                <br>
+    </div>
+    <!-- / 可擠壓式的推動容器 -->
+
+    <%- include('footer') %>

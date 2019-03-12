@@ -1,0 +1,42 @@
+<%- include('header') %>
+  <style type="text/css">
+    .pusher {
+      background-color: rgb(250, 250, 250);
+    }
+  </style>
+  <% if (manager) { %>
+    <% } else if(store) { %>
+      <% } else if(student) { %>
+        <% } else { %>
+          
+          <div style="text-align: center; color: black">
+            <div style="text-align: center; color: black">
+              <strong style="font-size: 20px;  ">請選擇登入身分</strong>
+            </div>
+
+            <div class="border-style"></div>
+
+            <div style="line-height:20px;" class="school">
+              <a href="/manager/signin">
+                <img src="/img/school.png">
+                <div style=" color: black">
+                  <h1>學校</h1>
+                </div>
+              </a>
+            </div>
+
+            
+            <div style="line-height:20px;" class="store">
+              <a href="/store/signin">
+                <img src="/img/store.png">
+                <div style=" color: black">
+                  <h1>商家</h>
+                </div>
+              </a>
+            </div>
+
+            
+
+          </div>
+          <% } %>
+            <%- include('footer') %>

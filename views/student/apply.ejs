@@ -1,0 +1,86 @@
+<%- include('../header') %>
+
+  <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+  <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+
+  <!-- 主要容器網格系統 -->
+  <div class="ts centered grid">
+    <div class="twelve wide column">
+
+      <div class="ts stackable ordered fluid steps">
+        <a class="active step" href="/student/apply">
+          <div class="content">
+            <div class="title">申請餐券</div>
+            <div class="description">填寫基本資料</div>
+          </div>
+        </a>
+        <a class="step" href="/student/queryApplyStatus">
+          <div class="content">
+            <div class="title">審查結果</div>
+            <div class="description">等待管理者審查</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- 主要內容區塊 -->
+      <div class="content">
+        <!-- 表單 -->
+        <form class="ts form" method="post" enctype="multipart/form-data" action="/createKey">
+          <div class="field required">
+            <label>學號</label>
+            <input placeholder="學號" type="text" name="stuId">
+          </div>
+          <div class="field required">
+            <label>姓名</label>
+            <input placeholder="姓名" type="name" name="stuName">
+          </div>
+          <div class="field required">
+            <label>學生證</label>
+            <input type="file" name="card">
+          </div>
+          <div class="field required">
+            <label>清寒證明</label>
+            <input type="file" name="prove">
+          </div>
+          <div class="field required">
+            <label>公鑰</label>
+            <textarea class="ts disabled input" id="pubKey" name="pubKey" readonly="readonly" rows="8" cols="20">
+                        </textarea>
+            <button class="ts pulsing button" id="createPubKey" type="button">
+              產生公鑰
+            </button>
+          </div>
+          <button class="ts positive button" id="submit" onClick="this.form.action='/student/apply/submit';this.form.submit();">
+            送出
+          </button>
+        </form>
+        <!-- / 表單 -->
+      </div>
+      <!-- / 主要內容區塊 -->
+
+    </div>
+  </div>
+  <!-- 主要容器網格系統 -->
+
+  <script>
+    $('#createPubKey').click(function () {
+      $.ajax({
+        type: 'POST',
+        url: "/student/apply/createKey",
+        success: function (msg) {
+          $("#pubKey").val(msg)
+        }
+      });
+    });
+    // $('#submit').click(function () {
+    //   $.ajax({
+    //     type: 'POST',
+    //     url: "/student/apply/createKey",
+    //     success: function (msg) {
+    //       $("#pubKey").val(msg)
+    //     }
+    //   });
+    // });
+  </script>
+
+  <%- include('../footer') %>

@@ -1,0 +1,72 @@
+<%- include('../header') %>
+    <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+    <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+
+    <div class="ts fluid divided statistics">
+        <div class="statistic">
+            <div class="value">
+                <%=tickets.length %>
+            </div>
+            <div class="label">張餐券</div>
+        </div>
+    </div>
+    <div class="ts doubling four cards">
+        <%tickets.forEach(function(ticket) { %>
+            <a class="ts primary centered card" onclick="checkUseTicket('<%=ticket.Key%>')">
+                <div class="center aligned content">
+                    <div class="header">餐券編號：
+                        <%=ticket.Key%>
+                    </div>
+                    <div class="description">
+                        擁有者：
+                        <%=ticket.Owner%>
+                            </br>
+                            額度：
+                            <%=ticket.Value%>
+                                </br>
+                                發放單位：
+                                <%=ticket.Licenser%>
+                                    </br>
+                                    發放日期：
+                                    <%=ticket.IssuedDate%>
+                                        </br>
+                                        使用日期：
+                                        <%=ticket.ExpDate%>
+                                            </br>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+    </div>
+
+    <div class="ts modals dimmer">
+        <dialog id="closableModal" class="ts closable tiny modal">
+            <div class="content">
+                <p>'確認使用此餐券?'</p>
+            </div>
+            <div class="actions">
+                <button class="ts deny button">
+                    取消
+                </button>
+                <button class="ts positive button">
+                    確認
+                </button>
+            </div>
+        </dialog>
+    </div>
+    <script>
+        function checkUseTicket(ticketKey) {
+            ts('#closableModal').modal({
+                approve: '.positive, .approve, .ok',
+                deny: '.negative, .deny, .cancel',
+                onDeny: function () {
+
+                },
+                onApprove: function () {
+                    window.location.href = "/student/createQrcode?ticketId=" + ticketKey
+                }
+            }).modal("show")
+        }
+    </script>
+
+    <%- include('../footer') %>
