@@ -34,7 +34,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
@@ -52,22 +51,25 @@ type Ticket struct {
 	Owner      string `json:"Owner"`
 	Licenser   string `json:"Licenser"`
 	Value      string `json:"Value"`
-	Price      string `json:"Price"`
-	IsPay      bool   `json:"IsPay"`
 	IsUsed     bool   `json:"IsUsed"`
+	Restaurant string `json:"Restaurant"`
 	IssuedDate string `json:"IssuedDate"`
 	ExpDate    string `json:"ExpDate"`
-	LicSign    string `json:"LicSign"`
+	SchSign    string `json:"SchSign"`
 	UsedDate   string `json:"UsedDate"`
 }
 
-type Transcation struct {
-	ObjectType    string `json:"docType"`
-	TranscationId string `json:"TranscationId"`
-	Who           string `json:"Who"`
-	Total         string `json:"Total"`
-	PayProof      string `json:"PayProof"`
-	IsPay         bool   `json:"IsPay"`
+type Student struct {
+	ObjectType   string `json:"docType"`
+	StuId        string `json:"StuId"`
+	StuName      string `json:"StuName"`
+	Card         string `json:"Card"`
+	Prove        string `json:"Prove"`
+	ApplyDate    string `json:"ApplyDate"`
+	VerifyResult int    `json:"VerifyResult"`
+	VerifyDate   string `json:"VerifyDate"`
+	PubKey       string `json:"PubKey"`
+	IsIssued     bool   `json:"IsIssued"`
 }
 
 type Number struct {
@@ -95,18 +97,40 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 
 	if function == "initLedger" { //初始化帳本
 		return s.initLedger(APIstub)
-	} else if function == "buyTickets" { //消費者購買餐券
-		return s.buyTickets(APIstub, args)
-	} else if function == "cart" { //購物車明細
-		return s.cart(APIstub, args)
+	} else if function == "issueTicket" { //管理者發餐券
+		return s.issueTicket(APIstub, args)
 	} else if function == "queryTicket" { //用ticketId查餐券
 		return s.queryTicket(APIstub, args)
 	} else if function == "queryTicketsByOwner" { //學生用owner(學號)查餐券
 		return s.queryTicketsByOwner(APIstub, args)
-	} else if function == "queryNotVerifyTransaction" { //查詢未驗證付款明細
-		return s.queryNotVerifyTransaction(APIstub)
-	} else if function == "queryVerifiedTransaction" { //查詢已驗證付款明細
-		return s.queryVerifiedTransaction(APIstub)
+	} else if function == "queryAllTickets" { //查詢全部餐券
+		return s.queryAllTickets(APIstub)
+	} else if function == "transaction" { //商家掃描餐券
+		return s.transaction(APIstub, args)
+	} else if function == "stuApply" { //學生申請餐券
+		return s.stuApply(APIstub, args)
+	} else if function == "queryStuInfo" { //管理者查詢學生申請資料
+		return s.queryStuInfo(APIstub)
+	} else if function == "writeVerifyResult" { //管理者寫入學生申請結果
+		return s.writeVerifyResult(APIstub, args)
+	} else if function == "queryPubKeyByStuId" { //管理者查詢學生對餐券公鑰
+		return s.queryPubKeyByStuId(APIstub, args)
+	} else if function == "queryApplyStatus" { //學生查詢申請狀態
+		return s.queryApplyStatus(APIstub, args)
+	} else if function == "querySuccessApplyStatusFalse" { ////管理者查詢申請通過狀態未發放
+		return s.querySuccessApplyStatusFalse(APIstub)
+	} else if function == "querySuccessApplyStatusTrue" { ////管理者查詢申請通過狀態已發放
+		return s.querySuccessApplyStatusTrue(APIstub)
+	} else if function == "queryFailedApplyStatus" { //管理者查詢未通過申請狀態
+		return s.queryFailedApplyStatus(APIstub)
+	} else if function == "queryUsedTicket" { //管理者查詢已使用餐券
+		return s.queryUsedTicket(APIstub)
+	} else if function == "queryNotUsedTicket" { //管理者查詢未使用餐券
+		return s.queryNotUsedTicket(APIstub)
+	} else if function == "queryStoreTicket" { //商家查詢已使用餐券
+		return s.queryStoreTicket(APIstub, args)
+	} else if function == "queryConsumptionRecords" { //學生查詢餐券消費紀錄
+		return s.queryConsumptionRecords(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -114,19 +138,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	academicYear := strconv.Itoa(time.Now().Year() - 1911) //年
-	// semester := time.Now().Month()                         //月
-
-	// var semesterNum string
-	// if int(semester) >= 8 && int(semester) <= 12 || int(semester) == 1 {
-	// 	semesterNum = "1"
-	// }
-	// if int(semester) >= 2 && int(semester) <= 7 {
-	// 	semesterNum = "2"
-	// }
-
-	ticketNum, _ := strconv.Atoi(academicYear + "000")
-	Number := &Number{ObjectType: "number", TicketNum: ticketNum}
+	Number := &Number{ObjectType: "number", TicketNum: 0}
 	numberJSONasBytes, err := json.Marshal(Number)
 
 	if err != nil {
@@ -143,16 +155,16 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 }
 
 //發餐券
-func (s *SmartContract) buyTickets(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) issueTicket(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	// 0	 1 		  2 	3 		4 			5 		6
-	// Owner Licenser Value	Price	IssuedDate	ExpDate LicSign
+	// 0	 1 		  2 	3 		4 			5 			6		7
+	// Owner Licenser Value	IsUsed	Restaurant	IssuedDate	ExpDate SchSign
 
-	if len(args) != 7 {
-		return shim.Error("Incorrect number of arguments. Expecting 7")
+	if len(args) != 8 {
+		return shim.Error("Incorrect number of arguments. Expecting 9")
 	}
 
-	fmt.Println("- start buyTickets")
+	fmt.Println("- start issueTicket")
 	// ==== Input sanitation ====
 	if len(args[0]) <= 0 {
 		return shim.Error("1st argument must be a non-empty string")
@@ -174,6 +186,9 @@ func (s *SmartContract) buyTickets(APIstub shim.ChaincodeStubInterface, args []s
 	}
 	if len(args[6]) <= 0 {
 		return shim.Error("7th argument must be a non-empty string")
+	}
+	if len(args[7]) <= 0 {
+		return shim.Error("8th argument must be a non-empty string")
 	}
 
 	// === Number ++ ===
@@ -203,13 +218,33 @@ func (s *SmartContract) buyTickets(APIstub shim.ChaincodeStubInterface, args []s
 	owner := args[0]
 	licenser := args[1]
 	value := args[2]
-	price := args[3]
-	isPay := false
-	isUsed := false
-	issuedDate := args[4]
-	expDate := args[5]
-	licSign := args[6]
+	isUsed, err := strconv.ParseBool(args[3])
+	if err != nil {
+		return shim.Error("isUsed must be bool")
+	}
+	restaurant := args[4]
+	issuedDate := args[5]
+	expDate := args[6]
+	schSign := args[7]
 	usedDate := "nil"
+
+	// ==== Check if student already verify ====
+	studentAsBytes, err := APIstub.GetState(owner)
+	if err != nil {
+		return shim.Error("Failed to get student: " + err.Error())
+	} else if studentAsBytes == nil {
+		fmt.Println("尚未申請餐券: " + owner)
+		return shim.Error("尚未申請餐券: " + owner)
+	}
+
+	student := Student{}
+	err = json.Unmarshal(studentAsBytes, &student)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	if student.VerifyResult != 1 {
+		return shim.Error("未符合發放資格")
+	}
 
 	// ==== Check if Ticket already exists ====
 	ticketAsBytes, err := APIstub.GetState(ticketId)
@@ -222,8 +257,8 @@ func (s *SmartContract) buyTickets(APIstub shim.ChaincodeStubInterface, args []s
 
 	// ==== Create ticketId object and marshal to JSON ====
 	objectType := "ticket"
-	Ticket := &Ticket{objectType, ticketId, owner, licenser, value, price,
-		isPay, isUsed, issuedDate, expDate, licSign, usedDate}
+	Ticket := &Ticket{objectType, ticketId, owner, licenser, value,
+		isUsed, restaurant, issuedDate, expDate, schSign, usedDate}
 	ticketJSONasBytes, err := json.Marshal(Ticket)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -235,49 +270,16 @@ func (s *SmartContract) buyTickets(APIstub shim.ChaincodeStubInterface, args []s
 		return shim.Error(err.Error())
 	}
 
-	fmt.Println("- end buyTickets ")
-	return shim.Success(nil)
-}
+	// === 改變學生發放狀態 ===
 
-//購物車
-func (s *SmartContract) cart(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-
-	// 0	1
-	// who	total
-
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
-	}
-
-	fmt.Println("- start cart")
-	// ==== Input sanitation ====
-	if len(args[0]) <= 0 {
-		return shim.Error("1st argument must be a non-empty string")
-	}
-	if len(args[1]) <= 0 {
-		return shim.Error("2nd argument must be a non-empty string")
-	}
-
-	who := args[0]
-	Total := args[1]
-	PayProof := nil
-	IsPay := false
-
-	// ==== Create ticketId object and marshal to JSON ====
-	objectType := "transcation"
-	Transcation := &Ticket{objectType, who, Total, PayProof, IsPay}
-	tranJSONasBytes, err := json.Marshal(Transcation)
+	student.IsIssued = true
+	studentAsBytes, _ = json.Marshal(student)
+	err = APIstub.PutState(owner, studentAsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
-	// === Save Ticket to state ===
-	err = APIstub.PutState(who, tranJSONasBytes)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
-	fmt.Println("- end cart ")
+	fmt.Println("- end issueTicket ")
 	return shim.Success(nil)
 }
 
@@ -322,74 +324,48 @@ func (s *SmartContract) queryTicketsByOwner(APIstub shim.ChaincodeStubInterface,
 	return shim.Success(queryResults)
 }
 
-//學生申請餐券資料
-func (s *SmartContract) payment(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+//查詢全部餐券
+func (s *SmartContract) queryAllTickets(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	// 0	 1
-	// Who PayProof
+	startKey := "T0"
+	endKey := "T899"
 
-	if len(args) != 6 {
-		return shim.Error("Incorrect number of arguments. Expecting 6")
-	}
-
-	fmt.Println("- start stuApply")
-	// ==== Input sanitation ====
-	if len(args[0]) <= 0 {
-		return shim.Error("1st argument must be a non-empty string")
-	}
-	if len(args[1]) <= 0 {
-		return shim.Error("2nd argument must be a non-empty string")
-	}
-
-	Who := args[0]
-	PayProof := args[1]
-
-	ticketAsBytes, err := APIstub.GetState(Who)
-
-	if err != nil {
-		return shim.Error("Failed to get ticket:" + err.Error())
-	} else if ticketAsBytes == nil {
-		return shim.Error("Ticket does not exist")
-	}
-
-	Transcation := Transcation{}
-	err = json.Unmarshal(ticketAsBytes, &Transcation)
-
-	Transcation.IsPay = true
-
-	ticketAsBytes, _ = json.Marshal(Transcation)
-	err = APIstub.PutState(Who, ticketAsBytes)
+	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
+	defer resultsIterator.Close()
 
-	fmt.Println("- end transaction (success)")
-	return shim.Success(nil)
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
 
-}
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
 
-//查詢未驗證付款明細
-func (s *SmartContract) queryNotVerifyTransaction(APIstub shim.ChaincodeStubInterface) sc.Response {
-
-	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"transcation\",\"IsPay\":false}}")
-
-	queryResults, err := getQueryResultForQueryString(APIstub, queryString)
-	if err != nil {
-		return shim.Error(err.Error())
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
 	}
-	return shim.Success(queryResults)
-}
+	buffer.WriteString("]")
 
-//查詢已驗證付款明細
-func (s *SmartContract) queryVerifiedTransaction(APIstub shim.ChaincodeStubInterface) sc.Response {
+	fmt.Printf("- queryAllTickets:\n%s\n", buffer.String())
 
-	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"transcation\",\"IsPay\":true}}")
-
-	queryResults, err := getQueryResultForQueryString(APIstub, queryString)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	return shim.Success(queryResults)
+	return shim.Success(buffer.Bytes())
 }
 
 //使用餐券
@@ -694,46 +670,6 @@ func (s *SmartContract) queryConsumptionRecords(APIstub shim.ChaincodeStubInterf
 		return shim.Error(err.Error())
 	}
 	return shim.Success(queryResults)
-}
-
-//初始化餐券編號
-func (s *SmartContract) initTicketNum(APIstub shim.ChaincodeStubInterface) sc.Response {
-
-	academicYear := strconv.Itoa(time.Now().Year() - 1911) //年
-	semester := time.Now().Month()                         //月
-
-	var semesterNum string
-	if int(semester) >= 8 && int(semester) <= 12 || int(semester) == 1 {
-		semesterNum = "1"
-	}
-	if int(semester) >= 2 && int(semester) <= 7 {
-		semesterNum = "2"
-	}
-
-	ticketNum, _ := strconv.Atoi(academicYear + semesterNum + "000")
-
-	numberAsBytes, err := APIstub.GetState("Number")
-
-	if err != nil {
-		return shim.Error("Failed to get number:" + err.Error())
-	} else if numberAsBytes == nil {
-		return shim.Error("Number does not exist")
-	}
-
-	number := Number{}
-	err = json.Unmarshal(numberAsBytes, &number)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
-	number.TicketNum = ticketNum
-
-	numberAsBytes, _ = json.Marshal(number)
-	err = APIstub.PutState("Number", numberAsBytes)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	return shim.Success(nil)
 }
 
 func getQueryResultForQueryString(APIstub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
